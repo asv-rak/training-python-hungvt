@@ -11,3 +11,6 @@ handlers:
 libraries:
 - name: django
   version: "latest"
+
+env_variables:
+  DJANGO_SETTINGS_MODULE: 'Django_StandAlone.settings'
