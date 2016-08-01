@@ -15,9 +15,12 @@
     <form action="/sign/" method="post">
       {% csrf_token %}
       <input type="hidden" name="guestbook_name" value="{{ guestbook_name }}" />
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
+      {{ form }}
+      <b>Error: {{ error_message }}</b>
       <div><input type="submit" value="Sign Guestbook"></div>
     </form>
+
+
 
     <a href="{{ url }}">{{ url_linktext }}</a>
 
