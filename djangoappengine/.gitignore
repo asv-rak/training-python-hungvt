@@ -24,3 +24,4 @@ node_modules
 
 # Pycharm project files
 .idea/
+djangoappengine/.idea/workspace.xml
