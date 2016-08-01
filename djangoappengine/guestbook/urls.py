@@ -1,5 +1,4 @@
 from django.conf.urls import *
-from guestbook.views import main_page, sign_post
 from . import views
 urlpatterns = [
     # Examples:
@@ -7,7 +6,7 @@ urlpatterns = [
     # url(r'^blog/', include('blog.urls')),
 
 
-    url(r'^$', views.main_page, name='main_page'),
-    url(r'^sign/$', views.sign_post, name='sign_post'),
+    url(r'^$', views.MainPage.as_view(), name='main_page'),
+    url(r'^sign/$', views.SignPost.as_view(), name='sign_post'),
 ]
 
