@@ -13,43 +13,19 @@ import urllib
 class MainPage(TemplateView):
     template_name = "guestbook/main_page.html"
 
-    def get(self, request):
-        # import logging
-        # logging.warning("===== main %r", request)
-
+    def get_context_data(self, **kwargs):
         form = SignForm()
-        # guestbook_name = request.GET.get('guestbook_name', DEFAULT_GUESTBOOK_NAME)
-        # greetings_obj = Greeting()
-        # greetings = greetings_obj.get_10_latest_message(guestbook_name)
-
-
         if users.get_current_user():
-            url = users.create_logout_url(request.get_full_path())
+            url = users.create_logout_url(self.request.get_full_path())
             url_linktext = 'Logout'
         else:
-            url = users.create_login_url(request.get_full_path())
+            url = users.create_login_url(self.request.get_full_path())
             url_linktext = 'Login'
-        import logging
-        logging.warning("===== sign %r", url_linktext)
-        # context = {
-        #     'greetings': greetings,
-        #     'guestbook_name': guestbook_name,
-        #     'url': url,
-        #     'url_linktext': url_linktext,
-        #     'form': form
-        # }
-        context = self.get_context_data(request)
+        context = super(MainPage, self).get_context_data(**kwargs)
         context['url'] = url
         context['url_linktext'] = url_linktext
         context['form'] = form
-
-        import logging
-        logging.error('template %s' % context)
-        return render(request, self.template_name, context)
-
-    def get_context_data(self, request, **kwargs):
-        context = super(MainPage, self).get_context_data(**kwargs)
-        guestbook_name = request.GET.get('guestbook_name', DEFAULT_GUESTBOOK_NAME)
+        guestbook_name = self.request.GET.get('guestbook_name', DEFAULT_GUESTBOOK_NAME)
         greetings_obj = Greeting()
         greetings = greetings_obj.get_10_latest_message(guestbook_name)
         context['greetings'] = greetings
