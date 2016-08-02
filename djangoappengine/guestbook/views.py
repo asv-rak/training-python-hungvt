@@ -2,7 +2,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.views import generic
 from .forms import SignForm
-from django.contrib import messages
+from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
 
 from google.appengine.api import users
 
@@ -10,7 +11,7 @@ from guestbook.models import Greeting, guestbook_key, DEFAULT_GUESTBOOK_NAME
 
 import urllib
 
-class MainPage(generic.base.TemplateView):
+class MainPage(TemplateView):
     template_name = "guestbook/main_page.html"
 
     def get(self, request):
@@ -45,8 +46,8 @@ class MainPage(generic.base.TemplateView):
         logging.error('template %s' % template_values)
         return render(request, self.template_name, template_values)
 
-class SignPost(generic.edit.FormView):
-    template_name = "guestbook/main_page.html"
+class SignPost(FormView):
+    template_name = "guestbook/main_page_form.html"
 
     def post(self, request, **kwargs):
         # import logging

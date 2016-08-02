@@ -16,7 +16,6 @@
       {% csrf_token %}
       <input type="hidden" name="guestbook_name" value="{{ guestbook_name }}" />
       {{ form }}
-      <b>Error: {{ error_message }}</b>
       <div><input type="submit" value="Sign Guestbook"></div>
     </form>
 
