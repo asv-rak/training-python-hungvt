@@ -16,15 +16,12 @@ class MainPage(TemplateView):
     def get(self, request):
         # import logging
         # logging.warning("===== main %r", request)
-        guestbook_name = request.GET.get('guestbook_name', DEFAULT_GUESTBOOK_NAME)
+
         form = SignForm()
-        # Ancestor Queries, as shown here, are strongly consistent with the High
-        # Replication Datastore. Queries that span entity groups are eventually
-        # consistent. If we omitted the ancestor from this query there would be
-        # a slight chance that Greeting that had just been written would not
-        # show up in a query.et
-        greetings_query = Greeting.query(ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
-        greetings = greetings_query.fetch(10)
+        # guestbook_name = request.GET.get('guestbook_name', DEFAULT_GUESTBOOK_NAME)
+        # greetings_obj = Greeting()
+        # greetings = greetings_obj.get_10_latest_message(guestbook_name)
+
 
         if users.get_current_user():
             url = users.create_logout_url(request.get_full_path())
@@ -34,16 +31,30 @@ class MainPage(TemplateView):
             url_linktext = 'Login'
         import logging
         logging.warning("===== sign %r", url_linktext)
-        template_values = {
-            'greetings': greetings,
-            'guestbook_name': guestbook_name,
-            'url': url,
-            'url_linktext': url_linktext,
-            'form': form
-        }
+        # context = {
+        #     'greetings': greetings,
+        #     'guestbook_name': guestbook_name,
+        #     'url': url,
+        #     'url_linktext': url_linktext,
+        #     'form': form
+        # }
+        context = self.get_context_data(request)
+        context['url'] = url
+        context['url_linktext'] = url_linktext
+        context['form'] = form
+
         import logging
-        logging.error('template %s' % template_values)
-        return render(request, self.template_name, template_values)
+        logging.error('template %s' % context)
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, request, **kwargs):
+        context = super(MainPage, self).get_context_data(**kwargs)
+        guestbook_name = request.GET.get('guestbook_name', DEFAULT_GUESTBOOK_NAME)
+        greetings_obj = Greeting()
+        greetings = greetings_obj.get_10_latest_message(guestbook_name)
+        context['greetings'] = greetings
+        context['guestbook_name'] = guestbook_name
+        return context
 
 class SignPost(FormView):
     template_name = "guestbook/main_page_form.html"
@@ -55,21 +66,27 @@ class SignPost(FormView):
             form = SignForm(request.POST)
             if form.is_valid():
                 guestbook_name = request.POST.get('guestbook_name')
-                greeting = Greeting(parent=guestbook_key(guestbook_name))
-
+                greetings_obj = Greeting()
+                greeting = greetings_obj.get_greetings_object(guestbook_name)
                 if users.get_current_user():
                     greeting.author = users.get_current_user()
 
                 greeting.content = request.POST.get('content')
                 greeting.put()
-                context = super(SignPost, self).get_context_data(**kwargs)
+                context = self.get_context_data(**kwargs)
                 context['form'] = form
                 # import logging
-                # logging.warning("===== sign %r", context['greetings'])
+                # logging.warning("===== sign %r", context['guestbook_name'])
                 return HttpResponseRedirect('/?' + urllib.urlencode({'guestbook_name': guestbook_name}))
             else:
                 context = super(SignPost, self).get_context_data(**kwargs)
                 context['error_message'] = "Length is not valid"
                 return render(request, self.template_name, context)
         else:
+            # import logging
+            # logging.warning("===== context %r", context)
             return HttpResponseRedirect('/')
+
+    def get_context_data(self, **kwargs):
+        context = super(SignPost, self).get_context_data(**kwargs)
+        return context
