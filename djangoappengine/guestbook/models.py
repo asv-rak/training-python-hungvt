@@ -1,4 +1,5 @@
 from google.appengine.ext import ndb
+from google.appengine.api import mail
 
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
@@ -38,3 +39,12 @@ class Guestbook(ndb.Model):
         greetings = greetings_query.fetch(number_of_greeting)
 
         return greetings
+
+# class MyMailer():
+#     @ndb.transactional
+#     def send_email(self, sender, to, sub, body):
+#         message = mail.EmailMessage(sender=sender,
+#                                     to=to,
+#                                     subject=sub,
+#                                     body=body)
+#         message.send()

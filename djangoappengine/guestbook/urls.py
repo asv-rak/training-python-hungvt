@@ -8,5 +8,6 @@ urlpatterns = [
 
     url(r'^$', views.MainPage.as_view(), name='main_page'),
     url(r'^sign/$', views.SignPost.as_view(), name='sign_post'),
+    url(r'^mail$', views.MailView.as_view(), name='mail'),
 ]
 

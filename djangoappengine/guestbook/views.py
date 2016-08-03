@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from .forms import SignForm
 from django.views.generic.base import TemplateView
+from django.views.generic.base import View
 from django.views.generic.edit import FormView
 
 from google.appengine.api import users
@@ -52,7 +53,12 @@ class SignPost(FormView):
                 greetings_obj = Greeting()
                 greetings_obj.add_new(guestbook_name, content, author)
                 if users.get_current_user():
-                    self.send_email()
+                    # self.send_email()
+                    # add task to task queue
+                    taskqueue.add(
+                        method='GET',
+                        url='/mail',
+                        params={'amount': 1})
                 context = self.get_context_data(**kwargs)
                 context['form'] = form
                 # guestbook_name = request.POST.get('guestbook_name')
@@ -79,10 +85,21 @@ class SignPost(FormView):
         context = super(SignPost, self).get_context_data(**kwargs)
         return context
 
+    # @ndb.transactional
+    # def send_email(self):
+    #     message = mail.EmailMessage(sender='hungvt@aoi-sys.vn',
+    #                                 to=users.get_current_user().email(),
+    #                                 subject="Your account has been approved",
+    #                                 body="""vi du noi dung""")
+    #     message.send()
+
+class MailView(View):
+
     @ndb.transactional
-    def send_email(self):
+    def get(self, request):
         message = mail.EmailMessage(sender='hungvt@aoi-sys.vn',
-                                    to=users.get_current_user().email(),
+                                    to='hungvt@aoi-sys.vn',
                                     subject="Your account has been approved",
                                     body="""vi du noi dung""")
         message.send()
+        return HttpResponseRedirect('/')
