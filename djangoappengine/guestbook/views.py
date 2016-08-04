@@ -38,18 +38,17 @@ class MainPageView(TemplateView):
 class SignPostView(FormView):
     template_name = "guestbook/main_page_form.html"
     success_url = "/"
+    form_class = SignForm
 
-    def form_valid(self, request, form, **kwargs):
-        guestbook_name = request.POST.get('guestbook_name')
-        content = request.POST.get('content')
+    def form_valid(self, form):
+        guestbook_name = self.request.POST.get('guestbook_name')
+        content = self.request.POST.get('content')
         author = None
         if users.get_current_user():
             author = users.get_current_user()
         guestbook_obj = Guestbook()
         guestbook_obj.put_greeting(guestbook_name, content, author)
         guestbook_obj.sendmail(users.get_current_user(), 'Email title', author)
-        context = super(SignPostView, self).get_context_data(**kwargs)
-        context['form'] = form
         # return HttpResponseRedirect('/?' + urllib.urlencode({'guestbook_name': guestbook_name}))
         return super(SignPostView, self).form_valid(form)
 
@@ -57,16 +56,6 @@ class SignPostView(FormView):
         context = {}
         context['error_message'] = "Length is not valid"
         return self.render_to_response(context)
-
-    def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            form = SignForm(request.POST)
-            if form.is_valid():
-                return self.form_valid(request, form, **kwargs)
-            else:
-                return self.form_invalid(form, **kwargs)
-        else:
-            return HttpResponseRedirect('/')
 
 class MailView(View):
 
