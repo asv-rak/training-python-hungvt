@@ -36,11 +36,11 @@ class Guestbook(ndb.Model):
         greeting.author = author
         greeting.put()
 
-    def sendmail(self):
+    def sendmail(self, title, author):
         taskqueue.add(
             method='GET',
             url='/mail',
-            params={'amount': 1})
+            params={'title': title, 'author': author})
 
     @staticmethod
     def get_default_name():

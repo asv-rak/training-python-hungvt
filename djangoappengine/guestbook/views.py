@@ -54,7 +54,7 @@ class SignPost(FormView):
         if users.get_current_user():
             # self.send_email()
             # add task to task queue
-            guestbook_obj.sendmail()
+            guestbook_obj.sendmail('Email title', author)
         context = self.get_context_data(**kwargs)
         context['form'] = form
         return HttpResponseRedirect('/?' + urllib.urlencode({'guestbook_name': guestbook_name}))
@@ -121,9 +121,11 @@ class MailView(View):
 
     @ndb.transactional
     def get(self, request, *args, **kwargs):
-        message = mail.EmailMessage(sender='hungvt@aoi-sys.vn',
+        title = request.GET.get('title')
+        author = request.GET.get('author')
+        message = mail.EmailMessage(sender=author,
                                     to='hungvt@aoi-sys.vn',
-                                    subject="Your account has been approved",
+                                    subject=title,
                                     body="""vi du noi dung""")
         message.send()
         return HttpResponseRedirect('/')
