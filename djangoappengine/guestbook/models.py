@@ -19,6 +19,8 @@ class Greeting(ndb.Model):
         return greeting_object
 
 class Guestbook(ndb.Model):
+    name = DEFAULT_GUESTBOOK_NAME
+
     def get_lastest_greeting(self, guestbook_name,
                              number_of_greeting=10):
         greetings_query = Greeting.query(ancestor=self.guestbook_key(guestbook_name)).order(-Greeting.date)
@@ -26,7 +28,7 @@ class Guestbook(ndb.Model):
 
         return greetings
 
-    def guestbook_key(self, guestbook_name=DEFAULT_GUESTBOOK_NAME):
+    def guestbook_key(self, guestbook_name = DEFAULT_GUESTBOOK_NAME):
         '''Constructs a Datastore key for a Guestbook entity with guestbook_name.'''
         return ndb.Key('Guestbook', guestbook_name)
 
@@ -36,11 +38,12 @@ class Guestbook(ndb.Model):
         greeting.author = author
         greeting.put()
 
-    def sendmail(self, title, author):
-        taskqueue.add(
-            method='GET',
-            url='/mail',
-            params={'title': title, 'author': author})
+    def sendmail(self, user, title, author):
+        if user:
+            taskqueue.add(
+                method='GET',
+                url='/mail',
+                params={'title': title, 'author': author})
 
     @staticmethod
     def get_default_name():
