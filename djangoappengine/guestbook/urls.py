@@ -1,5 +1,7 @@
 from django.conf.urls import *
+
 from . import views
+
 urlpatterns = [
     # Examples:
     # url(r'^$', 'Django_StandAlone.views.home', name='home'),

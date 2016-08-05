@@ -13,37 +13,52 @@ class Greeting(ndb.Model):
     content = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
 
+
     def get_greetings_object(self, guestbook_name):
-        guestbook_obj = Guestbook()
-        greeting_object = Greeting(parent=guestbook_obj.guestbook_key(guestbook_name))
+        guestbook_obj = Guestbook(guestbook_name)
+        greeting_object = Greeting(parent=guestbook_obj.guestbook_key())
         return greeting_object
+
 
 class Guestbook(ndb.Model):
     name = DEFAULT_GUESTBOOK_NAME
 
-    def get_lastest_greeting(self, guestbook_name,
-                             number_of_greeting=10):
-        greetings_query = Greeting.query(ancestor=self.guestbook_key(guestbook_name)).order(-Greeting.date)
+
+    def __init__(self, guesbook_name):
+        self.name = guesbook_name
+
+
+    def get_lastest_greeting(self, number_of_greeting=10):
+        greetings_query = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date)
         greetings = greetings_query.fetch(number_of_greeting)
 
         return greetings
 
-    def guestbook_key(self, guestbook_name = DEFAULT_GUESTBOOK_NAME):
-        '''Constructs a Datastore key for a Guestbook entity with guestbook_name.'''
-        return ndb.Key('Guestbook', guestbook_name)
 
-    def put_greeting(self, guestbook_name, content, author):
-        greeting = Greeting().get_greetings_object(guestbook_name)
+    def guestbook_key(self):
+        '''Constructs a Datastore key for a Guestbook entity with guestbook_name.'''
+        return ndb.Key('Guestbook', self.name)
+
+
+    def put_greeting(self, content, author, user, title):
+        greeting = Greeting().get_greetings_object(self.name)
         greeting.content = content
         greeting.author = author
         greeting.put()
-
-    def sendmail(self, user, title, author):
         if user:
             taskqueue.add(
                 method='GET',
                 url='/mail',
                 params={'title': title, 'author': author})
+
+
+    # def sendmail(self, user, title, author):
+    #     if user:
+    #         taskqueue.add(
+    #             method='GET',
+    #             url='/mail',
+    #             params={'title': title, 'author': author})
+
 
     @staticmethod
     def get_default_name():
