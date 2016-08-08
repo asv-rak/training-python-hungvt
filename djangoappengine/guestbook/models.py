@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 from google.appengine.api import taskqueue
+from google.appengine.api import memcache
 
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
@@ -29,10 +30,14 @@ class Guestbook(ndb.Model):
 
 
     def get_lastest_greeting(self, number_of_greeting=10):
-        greetings_query = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date)
-        greetings = greetings_query.fetch(number_of_greeting)
-
-        return greetings
+        greetings = memcache.get(self.name)
+        if greetings is None:
+            greetings_query = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date)
+            greetings = greetings_query.fetch(number_of_greeting)
+            memcache.add(self.name, greetings, 600)
+            return greetings
+        else:
+            return greetings
 
 
     def guestbook_key(self):
@@ -45,6 +50,7 @@ class Guestbook(ndb.Model):
         greeting.content = content
         greeting.author = author
         greeting.put()
+        memcache.delete(self.name)
         if user:
             taskqueue.add(
                 method='GET',

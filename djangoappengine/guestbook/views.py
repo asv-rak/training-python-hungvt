@@ -13,11 +13,11 @@ from guestbook.models import Greeting, Guestbook
 import urllib
 
 class MainPageView(TemplateView):
-    template_name = "guestbook/main_page2.html"
+    template_name = "guestbook/main_page.html"
 
 
     def get_context_data(self, **kwargs):
-        # form = SignForm()
+        form = SignForm()
         if users.get_current_user():
             url = users.create_logout_url(self.request.get_full_path())
             url_linktext = 'Logout'
@@ -27,7 +27,7 @@ class MainPageView(TemplateView):
         context = super(MainPageView, self).get_context_data(**kwargs)
         context['url'] = url
         context['url_linktext'] = url_linktext
-        # context['form'] = form
+        context['form'] = form
         guestbook_name = self.request.GET.get('guestbook_name', Guestbook.get_default_name())
         guestbook = Guestbook(guestbook_name)
         greetings = guestbook.get_lastest_greeting(10)
