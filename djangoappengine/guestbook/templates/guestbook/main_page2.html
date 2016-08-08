@@ -15,7 +15,7 @@
     <form action="/sign/" method="post">
       {% csrf_token %}
       <input type="hidden" name="guestbook_name" value="{{ guestbook_name }}" />
-      {{ form }}
+      <input type="input" name="content" value="" />
       <div><input type="submit" value="Sign Guestbook"></div>
     </form>
 
