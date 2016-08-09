@@ -69,3 +69,21 @@ class Guestbook(ndb.Model):
     @staticmethod
     def get_default_name():
         return DEFAULT_GUESTBOOK_NAME
+
+
+    def delete_message(self, author, user, is_superuser, id):
+        ndb.Key('Guestbook', 'default_guestbook', Greeting, int(id)).delete()
+        memcache.delete(self.name)
+
+        # if author == user:
+        #     greetings = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date).fetch(10)
+        #     for greeting in greetings:
+        #         ndb.Key('Guestbook', int(id)).delete()
+
+
+    def update_greeting_by_id(self, author, user, is_superuser, id, greeting_content):
+        obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(id)).get()
+        obj.content = greeting_content
+        obj.put()
+        print obj.content
+        memcache.delete(self.name)
