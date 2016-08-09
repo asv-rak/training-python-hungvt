@@ -2,7 +2,6 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
-from django.http import HttpResponse
 
 from google.appengine.api import users
 from google.appengine.api import mail
@@ -79,7 +78,7 @@ class EditFormView(FormView):
     def form_valid(self, form):
         guestbook_name = self.request.POST.get('guestbook_name')
         greeting_id = self.request.POST.get('greeting_id')
-        before_edit = self.request.POST.get('greeting_content_edit')
+        before_edit = self.request.POST.get('greeting_content')
         author = None
         if users.get_current_user():
             author = users.get_current_user()
@@ -89,7 +88,14 @@ class EditFormView(FormView):
         return super(EditFormView, self).form_valid(form)
 
     def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
+        greeting_id = self.request.POST.get('greeting_id')
+        obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(greeting_id)).get()
+        data = {'greeting_author': self.request.POST.get('greeting_author'),
+                'greeting_id': greeting_id,
+                'greeting_content': obj.content,
+                'guestbook_name': self.request.POST.get('guestbook_name')}
+        my_form = EditGreetingForm(data)
+        return self.render_to_response(self.get_context_data(form=my_form))
 
 
 class DeleteFormView(FormView):

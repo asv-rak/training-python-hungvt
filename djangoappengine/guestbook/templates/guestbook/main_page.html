@@ -26,7 +26,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="greeting_id" value="{{ greeting.key.id }}" />
                 <input type="hidden" name="greeting_author" value="{{ greeting.author }}" />
-                <input type="hidden" name="greeting_content_edit" value="{{ greeting.content }}" />
+                <input type="hidden" name="greeting_content" value="" />
                 <input type="hidden" name="guestbook_name" value="{{ guestbook_name }}" />
                 <div><input type="submit" value="Edit"></div>
               </form>

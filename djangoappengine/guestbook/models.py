@@ -85,5 +85,4 @@ class Guestbook(ndb.Model):
         obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(id)).get()
         obj.content = greeting_content
         obj.put()
-        print obj.content
         memcache.delete(self.name)
