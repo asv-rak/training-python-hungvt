@@ -22,8 +22,8 @@
               </form>
           {% endif %}
           {% if is_user_admin or user_login.nickname == greeting.author.nickname %}
-              <form action="/edit/" method="post">
-                {% csrf_token %}
+              <form action="/edit/" method="get">
+{#                {% csrf_token %}#}
                 <input type="hidden" name="greeting_id" value="{{ greeting.key.id }}" />
                 <input type="hidden" name="greeting_author" value="{{ greeting.author }}" />
                 <input type="hidden" name="greeting_content" value="" />

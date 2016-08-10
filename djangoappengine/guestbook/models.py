@@ -49,13 +49,14 @@ class Guestbook(ndb.Model):
         greeting = Greeting().get_greetings_object(self.name)
         greeting.content = content
         greeting.author = author
-        greeting.put()
-        memcache.delete(self.name)
-        if user:
-            taskqueue.add(
-                method='GET',
-                url='/mail',
-                params={'title': title, 'author': author})
+        result = greeting.put()
+        if result:
+            memcache.delete(self.name)
+            if user:
+                taskqueue.add(
+                    method='GET',
+                    url='/mail',
+                    params={'title': title, 'author': author})
 
 
     # def sendmail(self, user, title, author):
@@ -72,7 +73,7 @@ class Guestbook(ndb.Model):
 
 
     def delete_message(self, author, user, is_superuser, id):
-        ndb.Key('Guestbook', 'default_guestbook', Greeting, int(id)).delete()
+        ndb.Key('Guestbook', self.name, Greeting, int(id)).delete()
         memcache.delete(self.name)
 
         # if author == user:
@@ -84,5 +85,6 @@ class Guestbook(ndb.Model):
     def update_greeting_by_id(self, author, user, is_superuser, id, greeting_content):
         obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(id)).get()
         obj.content = greeting_content
-        obj.put()
-        memcache.delete(self.name)
+        result = obj.put()
+        if result:
+            memcache.delete(self.name)

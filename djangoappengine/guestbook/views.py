@@ -73,7 +73,18 @@ class MailView(View):
 class EditFormView(FormView):
     template_name = "guestbook/edit_form.html"
     form_class = EditGreetingForm
-    success_url = "/"
+    success_url = "../"
+
+    def get(self, request, *args, **kwargs):
+        greeting_id = self.request.GET.get('greeting_id')
+        obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(greeting_id)).get()
+        data = {'greeting_author': self.request.GET.get('greeting_author'),
+                'greeting_id': greeting_id,
+                'greeting_content': obj.content,
+                'guestbook_name': self.request.GET.get('guestbook_name')}
+        my_form = EditGreetingForm(data)
+        return self.render_to_response(self.get_context_data(form=my_form))
+
 
     def form_valid(self, form):
         guestbook_name = self.request.POST.get('guestbook_name')
@@ -87,6 +98,7 @@ class EditFormView(FormView):
         self.success_url = '/?' + urllib.urlencode({'guestbook_name': guestbook_name})
         return super(EditFormView, self).form_valid(form)
 
+
     def form_invalid(self, form):
         greeting_id = self.request.POST.get('greeting_id')
         obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(greeting_id)).get()
@@ -95,7 +107,8 @@ class EditFormView(FormView):
                 'greeting_content': obj.content,
                 'guestbook_name': self.request.POST.get('guestbook_name')}
         my_form = EditGreetingForm(data)
-        return self.render_to_response(self.get_context_data(form=my_form))
+        # return self.render_to_response(self.get_context_data(form=my_form))
+        return super(EditFormView, self).form_invalid(form)
 
 
 class DeleteFormView(FormView):
