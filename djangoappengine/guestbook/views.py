@@ -76,8 +76,9 @@ class EditFormView(FormView):
     success_url = "../"
 
     def get(self, request, *args, **kwargs):
+        guestbook_name = self.request.GET.get('guestbook_name')
         greeting_id = self.request.GET.get('greeting_id')
-        obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(greeting_id)).get()
+        obj = ndb.Key('Guestbook', guestbook_name, Greeting, int(greeting_id)).get()
         data = {'greeting_author': self.request.GET.get('greeting_author'),
                 'greeting_id': greeting_id,
                 'greeting_content': obj.content,
@@ -89,25 +90,25 @@ class EditFormView(FormView):
     def form_valid(self, form):
         guestbook_name = self.request.POST.get('guestbook_name')
         greeting_id = self.request.POST.get('greeting_id')
-        before_edit = self.request.POST.get('greeting_content')
         author = None
         if users.get_current_user():
             author = users.get_current_user()
-        form.update_greeting()
-        guestbook_name = form.cleaned_data['guestbook_name']
-        self.success_url = '/?' + urllib.urlencode({'guestbook_name': guestbook_name})
-        return super(EditFormView, self).form_valid(form)
+        # form.update_greeting()
+        # guestbook_name = form.cleaned_data['guestbook_name']
 
-
-    def form_invalid(self, form):
-        greeting_id = self.request.POST.get('greeting_id')
-        obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(greeting_id)).get()
+        obj = ndb.Key('Guestbook', guestbook_name, Greeting, int(greeting_id)).get()
         data = {'greeting_author': self.request.POST.get('greeting_author'),
                 'greeting_id': greeting_id,
                 'greeting_content': obj.content,
                 'guestbook_name': self.request.POST.get('guestbook_name')}
         my_form = EditGreetingForm(data)
-        # return self.render_to_response(self.get_context_data(form=my_form))
+        obj = Guestbook(guestbook_name)
+        new_greeting = obj.update_greeting_by_id(author, users.get_current_user(), False, greeting_id, self.request.POST.get('greeting_content'))
+        self.success_url = '/?' + urllib.urlencode({'guestbook_name': guestbook_name})
+        return super(EditFormView, self).form_valid(my_form)
+
+
+    def form_invalid(self, form):
         return super(EditFormView, self).form_invalid(form)
 
 
@@ -120,13 +121,20 @@ class DeleteFormView(FormView):
     def form_valid(self, form):
         guestbook_name = self.request.POST.get('guestbook_name')
         greeting_id = self.request.POST.get('greeting_id')
+        obj = ndb.Key('Guestbook', guestbook_name, Greeting, int(greeting_id)).get()
         author = None
         if users.get_current_user():
             author = users.get_current_user()
-        form.delete_message_form()
-        guestbook_name = form.cleaned_data['guestbook_name']
+        data = {'greeting_author': self.request.POST.get('greeting_author'),
+                'greeting_id': greeting_id,
+                'greeting_content': obj.content,
+                'guestbook_name': self.request.POST.get('guestbook_name')}
+        my_form = EditGreetingForm(data)
+        obj = Guestbook(guestbook_name)
+        new_greeting = obj.delete_message(author, users.get_current_user(), False, greeting_id)
+        # form.delete_message_form()
         self.success_url = '/?' + urllib.urlencode({'guestbook_name': guestbook_name})
-        return super(DeleteFormView, self).form_valid(form)
+        return super(DeleteFormView, self).form_valid(my_form)
 
 
     def form_invalid(self, form):
