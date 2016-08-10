@@ -83,7 +83,7 @@ class Guestbook(ndb.Model):
 
 
     def update_greeting_by_id(self, author, user, is_superuser, id, greeting_content):
-        obj = ndb.Key('Guestbook', 'default_guestbook', Greeting, int(id)).get()
+        obj = ndb.Key('Guestbook', self.name, Greeting, int(id)).get()
         obj.content = greeting_content
         result = obj.put()
         if result:
