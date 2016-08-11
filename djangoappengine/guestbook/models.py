@@ -103,3 +103,17 @@ class Guestbook(ndb.Model):
         obj = ndb.Key('Guestbook', self.name, Greeting, int(id)).get()
         print obj.content
         return obj
+
+
+    def convert_list_to_dict(self):
+        print "here"
+        greetings = self.get_all_greetings()
+        result_list = []
+        for greeting_item in greetings:
+            result_list.append(greeting_item.convert_item_to_dict())
+        print result_list
+        return result_list
+
+    def get_all_greetings(self):
+        greetings = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date).fetch()
+        return greetings

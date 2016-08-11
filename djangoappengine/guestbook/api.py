@@ -23,12 +23,22 @@ class APIGreetingDetail(FormView):
         try:
             guestbook_name = kwargs['guestbook_name']
             id = kwargs['id']
-            print id
             guestbook = Guestbook(guestbook_name)
-            # greeting_list = guestbook.get_lastest_greeting(10)
-            # data = greeting_list[0].convert_item_to_dict(guestbook_name)
             data = guestbook.get_item_by_id(id).convert_item_to_dict()
-            print data['content']
+            json_data = json.dumps(data)
+            # return JsonResponse(json_data)
+            return HttpResponse(json_data, content_type="application/json")
+        except:
+            return HttpResponse(status=404)
+
+
+class APIGreeting(FormView):
+    def get(self, request, *args, **kwargs):
+        import logging
+        try:
+            guestbook_name = kwargs['guestbook_name']
+            guestbook = Guestbook(guestbook_name)
+            data = guestbook.convert_list_to_dict()
             json_data = json.dumps(data)
             logging.warn("%r" % json_data)
             # return JsonResponse(json_data)
