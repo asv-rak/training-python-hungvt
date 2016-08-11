@@ -21,6 +21,15 @@ class Greeting(ndb.Model):
         return greeting_object
 
 
+    def convert_item_to_dict(self):
+        data = self.to_dict()
+        keys = data.keys()
+        result = {}
+        for item in keys:
+            result[item] = str(data[item])
+        return result
+
+
 class Guestbook(ndb.Model):
     name = DEFAULT_GUESTBOOK_NAME
 
@@ -88,3 +97,9 @@ class Guestbook(ndb.Model):
         result = obj.put()
         if result:
             memcache.delete(self.name)
+
+
+    def get_item_by_id(self, id):
+        obj = ndb.Key('Guestbook', self.name, Greeting, int(id)).get()
+        print obj.content
+        return obj

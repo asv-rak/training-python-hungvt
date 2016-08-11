@@ -1,6 +1,6 @@
 from django.conf.urls import *
 
-from . import views
+from . import views, api
 
 urlpatterns = [
     # Examples:
@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^mail$', views.MailView.as_view(), name='mail'),
     url(r'^edit/$', views.EditFormView.as_view(), name='edit_message'),
     url(r'^delete/$', views.DeleteFormView.as_view(), name='delete_message'),
+    url(r'^api/guestbook/(?P<guestbook_name>.+)/greeting/(?P<id>(.)+)$', api.APIGreetingDetail.as_view(), name='list_greeting'),
 ]
 
