@@ -1,11 +1,12 @@
 from django.http import HttpResponse
 from django.views.generic import FormView
-from django.core import serializers
-import ast
+from django.views.decorators.csrf import csrf_exempt
 
-from google.appengine.datastore.datastore_query import Cursor
+from google.appengine.api import users
 
-from guestbook.models import Guestbook
+from guestbook.models import Guestbook, Greeting
+
+from .forms import PostNewMessageForm
 
 import json
 
@@ -33,15 +34,34 @@ class APIGreetingDetail(FormView):
 
 
 class APIGreeting(FormView):
+    success_url = "/"
+    form_class = PostNewMessageForm
+
     def get(self, request, *args, **kwargs):
-        import logging
         try:
             guestbook_name = kwargs['guestbook_name']
             guestbook = Guestbook(guestbook_name)
             data = guestbook.convert_list_to_dict()
             json_data = json.dumps(data)
-            logging.warn("%r" % json_data)
             # return JsonResponse(json_data)
             return HttpResponse(json_data, content_type="application/json")
         except:
             return HttpResponse(status=404)
+
+
+    def form_valid(self, form):
+        print "valid method"
+        guestbook_name = form.cleaned_data.get('guestbook_name')
+        greeting_content = form.cleaned_data.get('greeting_content')
+        author = users.get_current_user()
+        guestbook = Guestbook(guestbook_name)
+        result = guestbook.put_greeting(greeting_content, author, author, 'Email title')
+        if result:
+            return HttpResponse(status=204)
+        else:
+            return HttpResponse(status=404)
+
+
+    def form_invalid(self, form):
+        return HttpResponse(status=400)
+

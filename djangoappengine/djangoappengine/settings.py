@@ -71,9 +71,9 @@ TEMPLATES = [
         },
     },
 ]
-#TEMPLATE_DIRS = (os.path.join(ROOT_PATH, "../guestbook/templates"),)
-#logging.warning("===== setting %r", TEMPLATES[0]["DIRS"])
-#logging.warning("===== setting %r", TEMPLATE_DIRS)
+TEMPLATE_DIRS = (os.path.join(ROOT_PATH, "../guestbook/templates"),)
+# logging.warning("===== setting %r", TEMPLATES[0]["DIRS"])
+# logging.warning("===== setting %r", TEMPLATE_DIRS)
 WSGI_APPLICATION = 'djangoappengine.wsgi.application'
 
 

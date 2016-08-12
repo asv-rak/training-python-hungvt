@@ -101,12 +101,10 @@ class Guestbook(ndb.Model):
 
     def get_item_by_id(self, id):
         obj = ndb.Key('Guestbook', self.name, Greeting, int(id)).get()
-        print obj.content
         return obj
 
 
     def convert_list_to_dict(self):
-        print "here"
         greetings = self.get_all_greetings()
         result_list = []
         for greeting_item in greetings:

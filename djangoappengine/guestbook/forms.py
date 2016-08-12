@@ -34,3 +34,9 @@ class EditGreetingForm(forms.Form):
     #     author = self.cleaned_data['greeting_author']
     #     obj = Guestbook(guestbook_name)
     #     obj.delete_message(author, users.get_current_user(), False, greeting_id)
+
+
+class PostNewMessageForm(forms.Form):
+    guestbook_name = forms.CharField(widget=forms.Textarea, required=False, initial="default_guestbook",)
+    greeting_content = forms.CharField(label="", required=True, max_length=10, widget=forms.Textarea, initial="khoi tao content",)
+    # csrf_token = forms.CharField(label="", required=True, widget=forms.TextInput)

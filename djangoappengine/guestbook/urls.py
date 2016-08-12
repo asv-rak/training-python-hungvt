@@ -1,4 +1,5 @@
 from django.conf.urls import *
+from django.views.decorators.csrf import csrf_exempt
 
 from . import views, api
 
@@ -13,7 +14,7 @@ urlpatterns = [
     url(r'^mail$', views.MailView.as_view(), name='mail'),
     url(r'^edit/$', views.EditFormView.as_view(), name='edit_message'),
     url(r'^delete/$', views.DeleteFormView.as_view(), name='delete_message'),
-    url(r'^api/guestbook/(?P<guestbook_name>.+)/greetings/$', api.APIGreeting.as_view(), name='list_greeting'),
+    url(r'^api/guestbook/(?P<guestbook_name>.+)/greeting/$', csrf_exempt(api.APIGreeting.as_view()), name='list_greeting'),
     url(r'^api/guestbook/(?P<guestbook_name>.+)/greeting/(?P<id>(.)+)$', api.APIGreetingDetail.as_view(), name='item_greeting'),
 ]
 
