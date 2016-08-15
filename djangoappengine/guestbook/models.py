@@ -83,7 +83,8 @@ class Guestbook(ndb.Model):
 
     def delete_message(self, author, user, is_superuser, id):
         ndb.Key('Guestbook', self.name, Greeting, int(id)).delete()
-        memcache.delete(self.name)
+        cache_result = memcache.delete(self.name)
+        return cache_result
 
         # if author == user:
         #     greetings = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date).fetch(10)
@@ -95,8 +96,11 @@ class Guestbook(ndb.Model):
         obj = ndb.Key('Guestbook', self.name, Greeting, int(id)).get()
         obj.content = greeting_content
         result = obj.put()
+        cache_result = None
         if result:
-            memcache.delete(self.name)
+            cache_result = memcache.delete(self.name)
+            return cache_result
+        return cache_result
 
 
     def get_item_by_id(self, id):

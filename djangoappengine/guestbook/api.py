@@ -19,8 +19,9 @@ class JsonResponse(HttpResponse):
 
 
 class APIGreetingDetail(FormView):
+    form_class = PostNewMessageForm
+
     def get(self, request, *args, **kwargs):
-        import logging
         try:
             guestbook_name = kwargs['guestbook_name']
             id = kwargs['id']
@@ -31,6 +32,40 @@ class APIGreetingDetail(FormView):
             return HttpResponse(json_data, content_type="application/json")
         except:
             return HttpResponse(status=404)
+
+
+    def put(self, request, *args, **kwargs):
+        guestbook_name = kwargs['guestbook_name']
+        id = kwargs['id']
+        # request.body
+        # {
+        #     "greeting_content": "asda",
+        #     "guestbook_name": "default_guestbook"
+        # }
+        request.POST = json.loads(request.body)
+        content = self.request.POST.get('greeting_content')
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        guestbook = Guestbook(guestbook_name)
+        print id
+        if form.is_valid():
+            guestbook.update_greeting_by_id(users.get_current_user(), users.get_current_user(), False, id, content)
+            return HttpResponse(status=204)
+        else:
+            return HttpResponse(status=404)
+
+
+    def delete(self, request, *args, **kwargs):
+        guestbook_name = kwargs['guestbook_name']
+        print guestbook_name
+        id = kwargs['id']
+        guestbook = Guestbook(guestbook_name)
+        result = guestbook.delete_message(users.get_current_user(), users.get_current_user(), False, id)
+        if result:
+            return HttpResponse(status=204)
+        else:
+            return HttpResponse(status=404)
+
 
 
 class APIGreeting(FormView):
@@ -64,4 +99,3 @@ class APIGreeting(FormView):
 
     def form_invalid(self, form):
         return HttpResponse(status=400)
-
