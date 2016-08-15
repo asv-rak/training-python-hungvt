@@ -50,7 +50,7 @@ class APIGreetingDetail(FormView):
         print id
         if form.is_valid():
             guestbook.update_greeting_by_id(users.get_current_user(), users.get_current_user(), False, id, content)
-            return HttpResponse(status=204)
+            return HttpResponse(status=200)
         else:
             return HttpResponse(status=404)
 
@@ -62,7 +62,7 @@ class APIGreetingDetail(FormView):
         guestbook = Guestbook(guestbook_name)
         result = guestbook.delete_message(users.get_current_user(), users.get_current_user(), False, id)
         if result:
-            return HttpResponse(status=204)
+            return HttpResponse(status=200)
         else:
             return HttpResponse(status=404)
 
@@ -92,7 +92,7 @@ class APIGreeting(FormView):
         guestbook = Guestbook(guestbook_name)
         result = guestbook.put_greeting(greeting_content, author, author, 'Email title')
         if result:
-            return HttpResponse(status=204)
+            return HttpResponse(status=200)
         else:
             return HttpResponse(status=404)
 
