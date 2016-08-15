@@ -54,13 +54,13 @@ class Guestbook(ndb.Model):
         return ndb.Key('Guestbook', self.name)
 
 
+    @ndb.transactional
     def put_greeting(self, content, author, user, title):
         greeting = Greeting().get_greetings_object(self.name)
         greeting.content = content
         greeting.author = author
-        result = greeting.put()
         cache_result = None
-        if result:
+        if greeting.put():
             cache_result = memcache.delete(self.name)
             if user:
                 taskqueue.add(
@@ -83,26 +83,23 @@ class Guestbook(ndb.Model):
     def get_default_name():
         return DEFAULT_GUESTBOOK_NAME
 
-
+    @ndb.transactional
     def delete_message(self, author, user, is_superuser, id):
         ndb.Key('Guestbook', self.name, Greeting, int(id)).delete()
-        cache_result = memcache.delete(self.name)
-        return cache_result
+        return memcache.delete(self.name)
 
         # if author == user:
         #     greetings = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date).fetch(10)
         #     for greeting in greetings:
         #         ndb.Key('Guestbook', int(id)).delete()
 
-
+    @ndb.transactional
     def update_greeting_by_id(self, author, user, is_superuser, id, greeting_content):
         obj = ndb.Key('Guestbook', self.name, Greeting, int(id)).get()
         obj.content = greeting_content
-        result = obj.put()
         cache_result = None
-        if result:
-            cache_result = memcache.delete(self.name)
-            return cache_result
+        if obj.put():
+            return memcache.delete(self.name)
         return cache_result
 
 
@@ -116,7 +113,6 @@ class Guestbook(ndb.Model):
         result_list = []
         for greeting_item in greetings:
             result_list.append(greeting_item.convert_item_to_dict())
-        print result_list
         return result_list
 
     def get_all_greetings(self):
