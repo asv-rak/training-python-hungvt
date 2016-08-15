@@ -6,6 +6,8 @@ from guestbook.models import Greeting, Guestbook
 
 class SignForm(forms.Form):
     content = forms.CharField(required=True, max_length=10, label="Your message", widget=forms.Textarea)
+    edit_author = forms.CharField(required=False,
+                                      widget=forms.TextInput(attrs={'readonly': 'readonly'}))
 
 
 class EditGreetingForm(forms.Form):

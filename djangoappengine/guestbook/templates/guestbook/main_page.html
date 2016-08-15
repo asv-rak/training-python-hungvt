@@ -5,11 +5,16 @@
   <body>
     {% for greeting in greetings %}
       {% if greeting.author.nickname %}
-        <b>{{ greeting.author }}</b> wrote:
+        <b>{{ greeting.author }}</b> wrote at {{ greeting.last_update|escape }}:
       {% else %}
         An anonymous person wrote:
       {% endif %}
       <blockquote>{{ greeting.content|escape }}</blockquote>
+      {% if greeting.author.nickname %}
+        <blockquote>Edited by {{ greeting.updated_by|escape }}</blockquote>
+      {% else %}
+
+      {% endif %}
       {% if user_login %}
           {% if is_user_admin %}
               <form action="/delete/" method="post">

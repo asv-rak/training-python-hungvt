@@ -13,6 +13,8 @@ class Greeting(ndb.Model):
     author = ndb.UserProperty()
     content = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
+    last_update = ndb.DateTimeProperty(auto_now_add=True)
+    updated_by = ndb.UserProperty()
 
 
     def get_greetings_object(self, guestbook_name):
@@ -97,6 +99,7 @@ class Guestbook(ndb.Model):
     def update_greeting_by_id(self, author, user, is_superuser, id, greeting_content):
         obj = ndb.Key('Guestbook', self.name, Greeting, int(id)).get()
         obj.content = greeting_content
+        obj.updated_by = author
         cache_result = None
         if obj.put():
             return memcache.delete(self.name)
