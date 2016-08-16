@@ -7,7 +7,7 @@ from guestbook.models import Greeting, Guestbook
 class SignForm(forms.Form):
     content = forms.CharField(required=True, max_length=10, label="Your message", widget=forms.Textarea)
     edit_author = forms.CharField(required=False,
-                                      widget=forms.TextInput(attrs={'readonly': 'readonly'}))
+                                      widget=forms.HiddenInput())
 
 
 class EditGreetingForm(forms.Form):
@@ -39,6 +39,5 @@ class EditGreetingForm(forms.Form):
 
 
 class PostNewMessageForm(forms.Form):
-    guestbook_name = forms.CharField(widget=forms.Textarea, required=False, initial="default_guestbook",)
-    greeting_content = forms.CharField(label="", required=True, max_length=10, widget=forms.Textarea, initial="khoi tao content",)
-    # csrf_token = forms.CharField(label="", required=True, widget=forms.TextInput)
+    guestbook_name = forms.CharField(widget=forms.Textarea, required=False, initial="default_guestbook_model",)
+    greeting_content = forms.CharField(label="", required=True, max_length=10, widget=forms.Textarea, initial="init_content_model",)

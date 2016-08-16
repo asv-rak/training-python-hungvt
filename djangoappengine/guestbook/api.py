@@ -20,6 +20,11 @@ class JsonResponseMixin(object):
 class APIGreetingDetail(JsonResponseMixin, FormView):
     form_class = PostNewMessageForm
 
+    #       GET http://localhost:8080/api/guestbook/name_of_guestbook/greeting/id_of_greeting
+    #
+    #       return data of the greeting in json string
+    #
+    #       return Http 404 if query error
     def get(self, request, *args, **kwargs):
         try:
             guestbook_name = kwargs['guestbook_name']
@@ -31,16 +36,26 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
             return HttpResponse(status=404)
 
 
+    #       PUT http://localhost:8080/api/guestbook/name_of_guestbook/greeting/id_of_greeting
+    #
+    #       return Http 200 if edited successfully
+    #
+    #       return Http 404 if query error
     def put(self, request, *args, **kwargs):
         # # request.body
         # # {
         # #     "greeting_content": "asda",
         # #     "guestbook_name": "default_guestbook"
         # # }
+        print request
         request.POST = json.loads(request.body)
         return super(APIGreetingDetail, self).put(request, *args, **kwargs)
 
+    #       PUT http://localhost:8080/api/guestbook/name_of_guestbook/greeting/id_of_greeting
+    #
+    #       return Http 200 if edited successfully
     def form_valid(self, form):
+        print self.request.body
         self.request.POST = json.loads(self.request.body)
         guestbook_name = self.kwargs['guestbook_name']
         content = self.request.POST.get('greeting_content')
@@ -49,11 +64,18 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
         guestbook.update_greeting_by_id(users.get_current_user(), users.get_current_user(), False, id, content)
         return HttpResponse(status=200)
 
-
+    #       PUT http://localhost:8080/api/guestbook/name_of_guestbook/greeting/id_of_greeting
+    #
+    #       return Http 404 if query error
     def form_invalid(self, form):
+        # print form
         return HttpResponse(status=404)
 
-
+    #       DELETE http://localhost:8080/api/guestbook/name_of_guestbook/greeting/id_of_greeting
+    #
+    #       return Http 200 if deleted successfully
+    #
+    #       return Http 404 if query error
     def delete(self, request, *args, **kwargs):
         guestbook_name = kwargs['guestbook_name']
         id = kwargs['id']
@@ -70,6 +92,11 @@ class APIGreeting(JsonResponseMixin, FormView):
     success_url = "/"
     form_class = PostNewMessageForm
 
+    #       GET http://localhost:8080/api/guestbook/name_of_guestbook/greeting/
+    #
+    #       return list data of the greetings of a guestbook in json string
+    #
+    #       return Http 404 if query error
     def get(self, request, *args, **kwargs):
         try:
             guestbook_name = kwargs['guestbook_name']
@@ -80,8 +107,12 @@ class APIGreeting(JsonResponseMixin, FormView):
             return HttpResponse(status=404)
 
 
+    #       POST http://localhost:8080/api/guestbook/name_of_guestbook/greeting/
+    #
+    #       return Http 200 if a new greeting is added successfully
+    #
+    #       return Http 404 if query error
     def form_valid(self, form):
-        print "valid method"
         guestbook_name = form.cleaned_data.get('guestbook_name')
         greeting_content = form.cleaned_data.get('greeting_content')
         author = users.get_current_user()
@@ -92,6 +123,8 @@ class APIGreeting(JsonResponseMixin, FormView):
         else:
             return HttpResponse(status=404)
 
-
+    #       POST http://localhost:8080/api/guestbook/name_of_guestbook/greeting/
+    #
+    #       return Http 400 if form invalid
     def form_invalid(self, form):
         return HttpResponse(status=400)
