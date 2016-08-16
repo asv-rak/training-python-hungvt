@@ -47,7 +47,6 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
         # #     "greeting_content": "asda",
         # #     "guestbook_name": "default_guestbook"
         # # }
-        print request
         request.POST = json.loads(request.body)
         return super(APIGreetingDetail, self).put(request, *args, **kwargs)
 
@@ -55,7 +54,6 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
     #
     #       return Http 200 if edited successfully
     def form_valid(self, form):
-        print self.request.body
         self.request.POST = json.loads(self.request.body)
         guestbook_name = self.kwargs['guestbook_name']
         content = self.request.POST.get('greeting_content')
@@ -68,7 +66,6 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
     #
     #       return Http 404 if query error
     def form_invalid(self, form):
-        # print form
         return HttpResponse(status=404)
 
     #       DELETE http://localhost:8080/api/guestbook/name_of_guestbook/greeting/id_of_greeting
