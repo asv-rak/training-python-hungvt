@@ -3,6 +3,7 @@ from django.views.generic import FormView
 from django.views.decorators.csrf import csrf_exempt
 
 from google.appengine.api import users
+from google.appengine.datastore.datastore_query import Cursor
 
 from guestbook.models import Guestbook, Greeting
 
@@ -98,10 +99,25 @@ class APIGreeting(JsonResponseMixin, FormView):
         try:
             guestbook_name = kwargs['guestbook_name']
             guestbook = Guestbook(guestbook_name)
-            data = guestbook.convert_list_to_dict()
-            return self.render_to_response(data)
+            # data = guestbook.convert_list_to_dict()
+            data, next_cursor, next = guestbook.get_page(str_cursor=self.request.GET.get('cursor', None))
+            datajson = guestbook.convert_list_to_dict(data)
+            return self.render_to_response(datajson)
         except:
             return HttpResponse(status=404)
+
+    def get_context_data(self, **kwargs):
+        guestbook_name = kwargs['guestbook_name']
+        guestbook = Guestbook(guestbook_name)
+        # data = guestbook.convert_list_to_dict()
+        data, next_cursor, next = guestbook.get_page()
+        datajson = guestbook.convert_list_to_dict(data)
+        data = {}
+        data['greeting'] = datajson
+        if next_cursor:
+            data['cursor'] = next_cursor.urlsafe()
+        data['next'] = next
+        return data
 
 
     #       POST http://localhost:8080/api/guestbook/name_of_guestbook/greeting/
