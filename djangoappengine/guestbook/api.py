@@ -107,9 +107,7 @@ class APIGreeting(JsonResponseMixin, FormView):
         try:
             guestbook_name = kwargs['guestbook_name']
             guestbook = Guestbook(guestbook_name)
-            # data = guestbook.convert_list_to_dict()
             cursor = self.request.GET.get('cursor', None)
-            # cursor = APIGreeting.myvar
             data, next_cursor, next = guestbook.get_page(str_cursor=cursor)
             data_dict = guestbook.convert_list_to_dict(data)
             cursor_dict = ast.literal_eval("{'cursor': '" + next_cursor.urlsafe() + "'}")
