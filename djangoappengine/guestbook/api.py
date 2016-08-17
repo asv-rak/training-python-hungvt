@@ -10,6 +10,7 @@ from guestbook.models import Guestbook, Greeting
 from .forms import PostNewMessageForm
 
 import json
+import ast
 
 
 class JsonResponseMixin(object):
@@ -85,12 +86,19 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
             return HttpResponse(status=404)
 
 
+def static_var(varname, value):
+    def decorate(func):
+        setattr(func, varname, value)
+        return func
+    return decorate
 
 class APIGreeting(JsonResponseMixin, FormView):
     success_url = "/"
     form_class = PostNewMessageForm
+    myvar = None
 
     #       GET http://localhost:8080/api/guestbook/name_of_guestbook/greeting/
+    #       GET http://localhost:8080/api/guestbook/name_of_guestbook/greeting/?cursor=<cursor_value_from_json>
     #
     #       return list data of the greetings of a guestbook in json string
     #
@@ -100,24 +108,16 @@ class APIGreeting(JsonResponseMixin, FormView):
             guestbook_name = kwargs['guestbook_name']
             guestbook = Guestbook(guestbook_name)
             # data = guestbook.convert_list_to_dict()
-            data, next_cursor, next = guestbook.get_page(str_cursor=self.request.GET.get('cursor', None))
-            datajson = guestbook.convert_list_to_dict(data)
-            return self.render_to_response(datajson)
+            cursor = self.request.GET.get('cursor', None)
+            # cursor = APIGreeting.myvar
+            data, next_cursor, next = guestbook.get_page(str_cursor=cursor)
+            data_dict = guestbook.convert_list_to_dict(data)
+            cursor_dict = ast.literal_eval("{'cursor': '" + next_cursor.urlsafe() + "'}")
+            data_dict.append(cursor_dict)
+            APIGreeting.myvar = next_cursor.urlsafe()
+            return self.render_to_response(data_dict)
         except:
             return HttpResponse(status=404)
-
-    def get_context_data(self, **kwargs):
-        guestbook_name = kwargs['guestbook_name']
-        guestbook = Guestbook(guestbook_name)
-        # data = guestbook.convert_list_to_dict()
-        data, next_cursor, next = guestbook.get_page()
-        datajson = guestbook.convert_list_to_dict(data)
-        data = {}
-        data['greeting'] = datajson
-        if next_cursor:
-            data['cursor'] = next_cursor.urlsafe()
-        data['next'] = next
-        return data
 
 
     #       POST http://localhost:8080/api/guestbook/name_of_guestbook/greeting/

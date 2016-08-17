@@ -50,10 +50,8 @@ class Guestbook(ndb.Model):
         try:
             guestbook_key = self.guestbook_key()
             cursor = Cursor(urlsafe=str_cursor)
-            greetings, next_cursor, more = Greeting.query(ancestor=guestbook_key).order(-Greeting.date).fetch_page(cursor_fetch_num, start_cursor=cursor)
-            # print len(greetings)
-            # print next_cursor
-            # print more
+            query = Greeting.query(ancestor=guestbook_key).order(-Greeting.date)
+            (greetings, next_cursor, more) = query.fetch_page(cursor_fetch_num, start_cursor=cursor)
         except:
             greetings = None
             next_cursor = None
