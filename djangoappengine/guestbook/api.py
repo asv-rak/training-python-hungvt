@@ -103,8 +103,9 @@ class APIGreeting(JsonResponseMixin, FormView):
             cursor = self.request.GET.get('cursor', None)
             data, next_cursor, next = guestbook.get_page(str_cursor=cursor)
             data_dict = guestbook.convert_list_to_dict(data)
-            cursor_dict = ast.literal_eval("{'cursor': '" + next_cursor.urlsafe() + "'}")
-            data_dict.append(cursor_dict)
+            if next:
+                cursor_dict = ast.literal_eval("{'cursor': '" + next_cursor.urlsafe() + "'}")
+                data_dict.append(cursor_dict)
             return self.render_to_response(data_dict)
         except Exception as e:
             print e

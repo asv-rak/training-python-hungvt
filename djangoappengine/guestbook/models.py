@@ -41,7 +41,7 @@ class Guestbook(ndb.Model):
     def __init__(self, guesbook_name):
         self.name = guesbook_name
 
-
+    @classmethod
     def get_page(self, cursor_fetch_num=FETCH_MAX, str_cursor=None):
         if cursor_fetch_num <= 0:
             greetings = None
