@@ -5,11 +5,38 @@
   <body>
     {% for greeting in greetings %}
       {% if greeting.author.nickname %}
-        <b>{{ greeting.author }}</b> wrote:
+        <b>{{ greeting.author }}</b> wrote at {{ greeting.last_update|escape }}:
       {% else %}
         An anonymous person wrote:
       {% endif %}
       <blockquote>{{ greeting.content|escape }}</blockquote>
+      {% if greeting.author.nickname %}
+        <blockquote>Edited by {{ greeting.updated_by|escape }}</blockquote>
+      {% else %}
+
+      {% endif %}
+      {% if user_login %}
+          {% if is_user_admin %}
+              <form action="/delete/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="greeting_id" value="{{ greeting.key.id }}" />
+                <input type="hidden" name="greeting_author" value="{{ greeting.author }}" />
+                <input type="hidden" name="greeting_content" value="{{ greeting.content }}" />
+                <input type="hidden" name="guestbook_name" value="{{ guestbook_name }}" />
+                <div><input type="submit" value="Delete"></div>
+              </form>
+          {% endif %}
+          {% if is_user_admin or user_login.nickname == greeting.author.nickname %}
+              <form action="/edit/" method="get">
+{#                {% csrf_token %}#}
+                <input type="hidden" name="greeting_id" value="{{ greeting.key.id }}" />
+                <input type="hidden" name="greeting_author" value="{{ greeting.author }}" />
+                <input type="hidden" name="greeting_content" value="" />
+                <input type="hidden" name="guestbook_name" value="{{ guestbook_name }}" />
+                <div><input type="submit" value="Edit"></div>
+              </form>
+          {% endif %}
+      {% endif %}
     {% endfor %}
 
     <form action="/sign/" method="post">
