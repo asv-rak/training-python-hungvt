@@ -98,9 +98,9 @@ class APIGreeting(JsonResponseMixin, FormView):
     #
     #       return Http 404 if query error
     def get(self, request, *args, **kwargs):
+        guestbook_name = kwargs['guestbook_name']
+        guestbook = Guestbook(guestbook_name)
         try:
-            guestbook_name = kwargs['guestbook_name']
-            guestbook = Guestbook(guestbook_name)
             cursor = self.request.GET.get('cursor', None)
             data, next_cursor, next = guestbook.get_page(str_cursor=cursor)
             data_dict = guestbook.convert_list_to_dict(data)
@@ -108,7 +108,8 @@ class APIGreeting(JsonResponseMixin, FormView):
             data_dict.append(cursor_dict)
             APIGreeting.myvar = next_cursor.urlsafe()
             return self.render_to_response(data_dict)
-        except:
+        except Exception as e:
+            print e
             return HttpResponse(status=404)
 
 
