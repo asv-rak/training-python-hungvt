@@ -1,0 +1,5 @@
+<form action="/edit/" method="post">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<div><input name="save_greeting" type="submit" value="Edit"></div>
+</form>
