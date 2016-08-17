@@ -89,7 +89,6 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
 class APIGreeting(JsonResponseMixin, FormView):
     success_url = "/"
     form_class = PostNewMessageForm
-    myvar = None
 
     #       GET http://localhost:8080/api/guestbook/name_of_guestbook/greeting/
     #       GET http://localhost:8080/api/guestbook/name_of_guestbook/greeting/?cursor=<cursor_value_from_json>
@@ -106,7 +105,6 @@ class APIGreeting(JsonResponseMixin, FormView):
             data_dict = guestbook.convert_list_to_dict(data)
             cursor_dict = ast.literal_eval("{'cursor': '" + next_cursor.urlsafe() + "'}")
             data_dict.append(cursor_dict)
-            APIGreeting.myvar = next_cursor.urlsafe()
             return self.render_to_response(data_dict)
         except Exception as e:
             print e
