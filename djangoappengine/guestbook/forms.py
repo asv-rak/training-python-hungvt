@@ -6,6 +6,8 @@ from guestbook.models import Greeting, Guestbook
 
 class SignForm(forms.Form):
     content = forms.CharField(required=True, max_length=10, label="Your message", widget=forms.Textarea)
+    edit_author = forms.CharField(required=False,
+                                      widget=forms.HiddenInput())
 
 
 class EditGreetingForm(forms.Form):
@@ -34,3 +36,8 @@ class EditGreetingForm(forms.Form):
     #     author = self.cleaned_data['greeting_author']
     #     obj = Guestbook(guestbook_name)
     #     obj.delete_message(author, users.get_current_user(), False, greeting_id)
+
+
+class PostNewMessageForm(forms.Form):
+    guestbook_name = forms.CharField(widget=forms.Textarea, required=False, initial="default_guestbook_model",)
+    greeting_content = forms.CharField(label="", required=True, max_length=10, widget=forms.Textarea, initial="init_content_model",)
