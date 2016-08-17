@@ -86,12 +86,6 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
             return HttpResponse(status=404)
 
 
-def static_var(varname, value):
-    def decorate(func):
-        setattr(func, varname, value)
-        return func
-    return decorate
-
 class APIGreeting(JsonResponseMixin, FormView):
     success_url = "/"
     form_class = PostNewMessageForm
