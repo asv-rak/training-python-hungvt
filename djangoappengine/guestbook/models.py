@@ -4,7 +4,7 @@ from google.appengine.api import memcache
 from google.appengine.datastore.datastore_query import Cursor
 
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
-FETCH_MAX = 2
+FETCH_MAX = 1
 
 # We set a parent key on the 'Greetings' to ensure that they are all in the same
 # entity group. Queries across the single entity group will be consistent.
@@ -41,7 +41,6 @@ class Guestbook(ndb.Model):
     def __init__(self, guesbook_name):
         self.name = guesbook_name
 
-    @classmethod
     def get_page(self, cursor_fetch_num=FETCH_MAX, str_cursor=None):
         if cursor_fetch_num <= 0:
             greetings = None

@@ -144,3 +144,6 @@ class DeleteFormView(FormView):
 class HelloView(TemplateView):
     template_name = "guestbook/hello.html"
     pass
+
+class TemplateView(TemplateView):
+    template_name = 'guestbook/dojo.html'
