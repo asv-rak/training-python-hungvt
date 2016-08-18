@@ -139,3 +139,8 @@ class DeleteFormView(FormView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class HelloView(TemplateView):
+    template_name = "guestbook/hello.html"
+    pass
