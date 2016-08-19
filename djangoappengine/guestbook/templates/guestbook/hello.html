@@ -8,7 +8,7 @@
         var dojoConfig = {
             baseUrl: '//ajax.googaleapis.com/ajax/libs/dojo/1.10.0/dojo',
             paths: {
-                'hello': '/static/js/hello'
+                'guestbookpath': '/static/js/guestbook'
             },
         };
     </script>
@@ -16,28 +16,19 @@
 </head>
 <body>
     <h1 id="greeting">Hello</h1>
+    <div id="authorContainer"></div>
     <!-- configure Dojo -->
     <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.0/dojo/dojo.js"></script>
     <script>
         require([
             'dojo/dom',
             'dojo/fx',
+            'guestbookpath/widget/myModule',
             'dojo/domReady!'
-        ], function (dom, fx) {
-            // The piece we had before...
-            var greeting = dom.byId('greeting');
-            greeting.innerHTML += ' from Dojo!';
-
-            // ...but now, with an animation!
-            fx.slideTo({
-                node: greeting,
-                top: 100,
-                left: 500
-            }).play();
-        });
-        require([
-            'hello/myModule'
-        ], function (myModule) {
+        ], function (dom, fx, myModule) {
+            console.log(myModule);
+            var id = dom.byId("greeting");
+            myModule.animation(id);
             myModule.setText('greeting', 'Hello Dojo!');
 
             setTimeout(function () {
