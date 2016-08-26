@@ -1,10 +1,42 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Title</title>
+    <meta charset="utf-8">
+    <title>Tutorial: Hello Dojo!</title>
+    <!-- load Dojo -->
+    <script>
+        var dojoConfig = {
+            baseUrl: '//ajax.googaleapis.com/ajax/libs/dojo/1.10.0/dojo',
+            paths: {
+                'guestbookpath': '/static/js/guestbook'
+            },
+        };
+    </script>
+
 </head>
 <body>
-
+    <h1 id="greeting">DOJO</h1>
+    <div id="authorContainer"></div>
+    <!-- configure Dojo -->
+    <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.0/dojo/dojo.js"></script>
+    <script>
+	    require(["dojo/request", "dojo/dom", "dojo/_base/array",
+			        "guestbookpath/widget/guestbookWidget",
+				    "dojo/domReady!"],
+			    function (request, dom, arrayUtil, guestbookWidget) {
+				    // Load up our authors
+				    request("static/js/guestbook/data/test.json", {
+					    handleAs: "json"
+				    }).then(function (authors) {
+					    // Get a reference to our container
+					    var authorContainer = dom.byId("authorContainer");
+						alert(authorContainer);
+					    arrayUtil.forEach(authors, function (author) {
+						    // Create our widget and place it
+						    var widget = new guestbookWidget(author).placeAt(authorContainer);
+					    });
+				    });
+			    });
+    </script>
 </body>
 </html>

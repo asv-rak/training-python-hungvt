@@ -16,7 +16,6 @@
 </head>
 <body>
     <h1 id="greeting">Hello</h1>
-    <div id="authorContainer"></div>
     <!-- configure Dojo -->
     <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.0/dojo/dojo.js"></script>
     <script>
@@ -26,7 +25,6 @@
             'guestbookpath/widget/myModule',
             'dojo/domReady!'
         ], function (dom, fx, myModule) {
-            console.log(myModule);
             var id = dom.byId("greeting");
             myModule.animation(id);
             myModule.setText('greeting', 'Hello Dojo!');
