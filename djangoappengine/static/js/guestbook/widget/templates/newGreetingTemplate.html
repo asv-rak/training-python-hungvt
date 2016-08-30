@@ -1,0 +1,24 @@
+<div data-dojo-type="dijit/form/Form" id="myForm" data-dojo-id="myForm"
+encType="multipart/form-data" action="" method="">
+    <table style="border: 1px solid #9f9f9f;" cellspacing="10">
+        <tr>
+            <td>
+                <label for="guestbookname">Guestbook name:</label>
+            </td>
+            <td>
+                <input type="text" id="guestbookname" name="guestbookname" required="true"
+                       data-dojo-type="dijit/form/ValidationTextBox"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="content">Content:</label>
+            </td>
+            <td>
+                <input type="text" id="content" name="content" data-dojo-type="dijit/form/ValidationTextBox"/>
+            </td>
+        </tr>
+    </table>
+
+	<button id="myButton">Sign!</button>
+</div>

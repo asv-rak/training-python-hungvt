@@ -16,6 +16,9 @@
 </head>
 <body>
     <h1 id="greeting">DOJO</h1>
+    <a href="_ah/login?continue=http%3A//127.0.0.1%3A8080/">login</a>
+    <br>
+    <a href="dojo/newgreeting">New greeting</a>
     <div id="authorContainer"></div>
     <!-- configure Dojo -->
     <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.0/dojo/dojo.js"></script>
@@ -25,12 +28,12 @@
 				    "dojo/domReady!"],
 			    function (request, dom, arrayUtil, guestbookWidget) {
 				    // Load up our authors
-				    request("static/js/guestbook/data/test.json", {
-					    handleAs: "json"
+{#				    request("static/js/guestbook/data/test.json", {#}
+				    request.get("api/guestbook/default_guestbook/greeting/", {
+				    	handleAs: "json"
 				    }).then(function (authors) {
 					    // Get a reference to our container
 					    var authorContainer = dom.byId("authorContainer");
-						alert(authorContainer);
 					    arrayUtil.forEach(authors, function (author) {
 						    // Create our widget and place it
 						    var widget = new guestbookWidget(author).placeAt(authorContainer);

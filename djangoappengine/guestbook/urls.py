@@ -18,5 +18,6 @@ urlpatterns = [
     url(r'^api/guestbook/(?P<guestbook_name>.+)/greeting/(?P<id>(.)+)$', csrf_exempt(api.APIGreetingDetail.as_view()), name='item_greeting'),
     url(r'^hello/$', views.HelloView.as_view(), name='ui'),
     url(r'^dojo/?$', views.TemplateView.as_view()),
+    url(r'^dojo/newgreeting/?$', views.NewGreetingView.as_view()),
 ]
 

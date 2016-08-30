@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tutorial: Hello Dojo!</title>
+    <!-- load Dojo -->
+    <script>
+        var dojoConfig = {
+            baseUrl: '//ajax.googaleapis.com/ajax/libs/dojo/1.10.0/dojo',
+            paths: {
+                'guestbookpath': '/static/js/guestbook'
+            },
+        };
+    </script>
+
+</head>
+<body>
+    <h1 id="greeting">New greeting DOJO</h1>
+    <div id="greetingContainer"></div>
+
+    <!-- configure Dojo -->
+    <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.0/dojo/dojo.js"></script>
+    <script>
+	    require(["dojo/request", "dojo/dom", "dojo/_base/array",
+			        "guestbookpath/widget/newGreetingWidget",
+			        "dojo/on",
+				    "dojo/domReady!"],
+			    function (request, dom, arrayUtil, newGreetingWidget, on, registry) {
+	    	        var greetingContainer = dom.byId("greetingContainer");
+					var widget = new newGreetingWidget().placeAt(greetingContainer);
+				    var myButton = dom.byId("myButton");
+
+				    on(myButton, "click", function (evt) {
+					    var guestbooknametext = dom.byId("guestbookname").value;
+					    var contenttext = dom.byId("content").value;
+
+					    request.post("http://localhost:8080/api/guestbook/default_guestbook" +
+							    "/greeting/", {
+						    headers: {
+							    "X-Requested-With": ""
+						    },
+						    data: {
+							    greeting_content: contenttext,
+							    guestbook_name: guestbooknametext
+						    }
+					    }).then(function () {
+							alert("request sent");
+					    });
+				    })
+
+			    });
+    </script>
+</body>
+</html>

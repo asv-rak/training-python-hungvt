@@ -147,3 +147,6 @@ class HelloView(TemplateView):
 
 class TemplateView(TemplateView):
     template_name = 'guestbook/dojo.html'
+
+class NewGreetingView(TemplateView):
+	template_name = 'guestbook/newgreeting.html'

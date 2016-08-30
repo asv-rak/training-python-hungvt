@@ -1,23 +1,23 @@
 [
     {
-        "name": "Khánh Trình",
-        "bio": "Junior develop"
+        "author": "Khánh Trình",
+        "content": "Junior develop"
     },
     {
-        "name": "Con nhà người ta",
-        "bio": "Senior develop"
+        "author": "Con nhà người ta",
+        "content": "Senior develop"
     },
     {
-        "name": "Ngáo ộp",
-        "bio": "Gà"
+        "author": "Ngáo ộp",
+        "content": "Gà"
     },
     {
-        "name": "Cùi bắp",
-        "bio": "Ngán bắp"
+        "author": "Cùi bắp",
+        "content": "Ngán bắp"
     },
     {
-        "name": "Mèo",
+        "author": "Mèo",
         "avatar": "/static/js/guestbook/widget/images/defaultAvatar.png",
-        "bio": "Rất ghét chó"
+        "content": "Rất ghét chó"
     }
 ]
