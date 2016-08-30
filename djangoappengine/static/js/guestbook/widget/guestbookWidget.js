@@ -1,5 +1,7 @@
 define([
     'dojo/_base/declare',
+	'dojo/request',
+	'dojo/request/xhr',
     'dojo/_base/fx',
     'dojo/_base/lang',
     'dojo/dom-style',
@@ -8,12 +10,13 @@ define([
     'dijit/_WidgetBase',
     'dijit/_TemplatedMixin',
     'dojo/text!./templates/myModule.html'
-], function(declare, baseFx, lang, domStyle, mouse, on, _WidgetBase, _TemplatedMixin, template){
+], function(declare, request, xhr, baseFx, lang, domStyle, mouse, on, _WidgetBase, _TemplatedMixin, template){
 
     return declare([_WidgetBase, _TemplatedMixin], {
         templateString: template,
 
 		//template variables
+		id: "no id",
 		author: "No Name",
 		avatar: require.toUrl("./images/defaultAvatar.png"),
 		content: "No bio",
@@ -34,7 +37,31 @@ define([
 		},
 
 		_changeContent: function () {
-			alert(this.content);
+			info = {"greeting_content": "modifiedcontent", "guestbook_name": "default_guestbook"};
+			// http://localhost:8080/api/guestbook/default_guestbook/greeting/5629499534213120
+			// var xhrArgs = {
+			// 	// headers: {
+			// 	// 	"X-Requested-With": ""
+			// 	// },
+			// 	url: "http://localhost:8080/api/guestbook/default_guestbook/greeting/" + this.id,
+			// 	data: dojo.toJson(info),
+			// 	method: "POST",
+			// 	handleAs: "json",
+			// 	headers: {"Content-Type": "application/json"},
+			// 	load: function (data) {
+			//
+			// 	},
+			// 	error: function (error) {
+			//
+			// 	}
+			// };
+
+			request.put("http://localhost:8080/api/guestbook/default_guestbook/greeting/" + this.id, {
+						    data: dojo.toJson(info),
+					    }).then(function () {
+							alert("request sent");
+					    });
+			alert("b");
 		},
 
 		_changeBackground: function (newColor) {
