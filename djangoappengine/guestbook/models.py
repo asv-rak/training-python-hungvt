@@ -31,6 +31,7 @@ class Greeting(ndb.Model):
         result = {}
         for item in keys:
             result[item] = str(data[item])
+        result['id'] = str(self.key.id())
         return result
 
 
