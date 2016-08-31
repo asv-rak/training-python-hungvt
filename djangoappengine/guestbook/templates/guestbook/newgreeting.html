@@ -36,8 +36,8 @@
 
 					    request.post("http://localhost:8080/api/guestbook/default_guestbook" +
 							    "/greeting/", {
-						    headers: {
-							    "X-Requested-With": ""
+						    headers: {                     // This is required to stop the
+							    "X-Requested-With": "" // server from rejecting the
 						    },
 						    data: {
 							    greeting_content: contenttext,

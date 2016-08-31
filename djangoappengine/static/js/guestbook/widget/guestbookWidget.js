@@ -1,19 +1,19 @@
 define([
-    'dojo/_base/declare',
+	'dojo/_base/declare',
 	'dojo/request',
 	'dojo/request/xhr',
-    'dojo/_base/fx',
-    'dojo/_base/lang',
-    'dojo/dom-style',
-    'dojo/mouse',
-    'dojo/on',
-    'dijit/_WidgetBase',
-    'dijit/_TemplatedMixin',
-    'dojo/text!./templates/myModule.html'
+	'dojo/_base/fx',
+	'dojo/_base/lang',
+	'dojo/dom-style',
+	'dojo/mouse',
+	'dojo/on',
+	'dijit/_WidgetBase',
+	'dijit/_TemplatedMixin',
+	'dojo/text!./templates/myModule.html'
 ], function(declare, request, xhr, baseFx, lang, domStyle, mouse, on, _WidgetBase, _TemplatedMixin, template){
 
-    return declare([_WidgetBase, _TemplatedMixin], {
-        templateString: template,
+	return declare([_WidgetBase, _TemplatedMixin], {
+		templateString: template,
 
 		//template variables
 		id: "no id",
@@ -23,7 +23,8 @@ define([
 		date: "date",
 		updateBy: "updater",
 		baseBackgroundColor: "#fff",
-        mouseBackgroundColor: "#def",
+		mouseBackgroundColor: "#def",
+		target: "",
 
 		postCreate: function () {
 			var domNode = this.domNode;
@@ -36,32 +37,27 @@ define([
 			);
 		},
 
-		_changeContent: function () {
-			info = {"greeting_content": "modifiedcontent", "guestbook_name": "default_guestbook"};
-			// http://localhost:8080/api/guestbook/default_guestbook/greeting/5629499534213120
-			// var xhrArgs = {
-			// 	// headers: {
-			// 	// 	"X-Requested-With": ""
-			// 	// },
-			// 	url: "http://localhost:8080/api/guestbook/default_guestbook/greeting/" + this.id,
-			// 	data: dojo.toJson(info),
-			// 	method: "POST",
-			// 	handleAs: "json",
-			// 	headers: {"Content-Type": "application/json"},
-			// 	load: function (data) {
-			//
-			// 	},
-			// 	error: function (error) {
-			//
-			// 	}
-			// };
+		_setIdAttr: function(id){
+			this.id = id;
+			this.target = lang.replace("http://localhost:8080/api/guestbook/default_guestbook/greeting/{0}", [this.id]);
+		},
 
-			request.put("http://localhost:8080/api/guestbook/default_guestbook/greeting/" + this.id, {
-						    data: dojo.toJson(info),
-					    }).then(function () {
-							alert("request sent");
-					    });
-			alert("b");
+		_changeContent: function () {
+			info = '{"greeting_content": "modified", "guestbook_name": "default_guestbook"}';
+
+			xhr.put(this.target,{
+				data: info,
+				headers: {
+					"X-Requested-With": null,
+					"X-Http-Method-Override": "PUT",
+					"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+				},
+				handleAs: "text"
+			}).then(function(res){
+				alert("Post modified.")
+			}, function(err){
+				alert("Please check the input length.")
+			});
 		},
 
 		_changeBackground: function (newColor) {
@@ -91,5 +87,5 @@ define([
 				this.avatarNode.src = imagePath;
 			}
 		}
-    });
+	});
 });

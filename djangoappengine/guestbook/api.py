@@ -68,6 +68,7 @@ class APIGreetingDetail(JsonResponseMixin, FormView):
     #
     #       return Http 404 if query error
     def form_invalid(self, form):
+        print "Please check input length of each field"
         return HttpResponse(status=404)
 
     #       DELETE http://localhost:8080/api/guestbook/name_of_guestbook/greeting/id_of_greeting
