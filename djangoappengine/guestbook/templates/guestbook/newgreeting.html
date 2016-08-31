@@ -44,7 +44,9 @@
 							    guestbook_name: guestbooknametext
 						    }
 					    }).then(function () {
-							alert("request sent");
+							alert("Request sent");
+					    }, function (err) {
+						    alert("Invalid request.")
 					    });
 				    })
 

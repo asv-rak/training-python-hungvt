@@ -1,6 +1,7 @@
 define([
 	'dojo/_base/declare',
 	'dojo/request',
+	"dojo/dom",
 	'dojo/request/xhr',
 	'dojo/_base/fx',
 	'dojo/_base/lang',
@@ -10,7 +11,7 @@ define([
 	'dijit/_WidgetBase',
 	'dijit/_TemplatedMixin',
 	'dojo/text!./templates/myModule.html'
-], function(declare, request, xhr, baseFx, lang, domStyle, mouse, on, _WidgetBase, _TemplatedMixin, template){
+], function(declare, request, dom, xhr, baseFx, lang, domStyle, mouse, on, _WidgetBase, _TemplatedMixin, template){
 
 	return declare([_WidgetBase, _TemplatedMixin], {
 		templateString: template,
@@ -33,7 +34,7 @@ define([
 			this.own(
 					on(domNode, mouse.enter, lang.hitch(this, "_changeBackground", this.mouseBackgroundColor)),
 					on(domNode, mouse.leave, lang.hitch(this, "_changeBackground", this.baseBackgroundColor)),
-					on(domNode, "click", lang.hitch(this, "_changeContent"))
+					on(domNode, "click", lang.hitch(this, "_openDialog"))
 			);
 		},
 
@@ -42,8 +43,14 @@ define([
 			this.target = lang.replace("http://localhost:8080/api/guestbook/default_guestbook/greeting/{0}", [this.id]);
 		},
 
-		_changeContent: function () {
-			info = '{"greeting_content": "modified", "guestbook_name": "default_guestbook"}';
+		_openDialog: function () {
+			var content = window.prompt("Please enter your editing content","");
+			if (content != null)
+				this._changeContent(content)
+		},
+
+		_changeContent: function (newcontent) {
+			info = '{"greeting_content": "' + newcontent + '", "guestbook_name": "default_guestbook"}';
 
 			xhr.put(this.target,{
 				data: info,

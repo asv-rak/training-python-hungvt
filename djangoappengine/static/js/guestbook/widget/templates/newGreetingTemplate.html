@@ -7,7 +7,8 @@ encType="multipart/form-data" action="" method="">
             </td>
             <td>
                 <input type="text" id="guestbookname" name="guestbookname" required="true"
-                       data-dojo-type="dijit/form/ValidationTextBox"/>
+                       data-dojo-type="dijit/form/ValidationTextBox"
+                />
             </td>
         </tr>
         <tr>
@@ -15,7 +16,11 @@ encType="multipart/form-data" action="" method="">
                 <label for="content">Content:</label>
             </td>
             <td>
-                <input type="text" id="content" name="content" data-dojo-type="dijit/form/ValidationTextBox"/>
+	            <input type="text" id="content" name="content"
+	                   data-dojo-type="dijit/form/ValidationTextBox"
+	                   data-dojo-props="regExp:'^\w{1,10}$', invalidMessage:'length must less
+	                   than 10.'"
+	            />
             </td>
         </tr>
     </table>
