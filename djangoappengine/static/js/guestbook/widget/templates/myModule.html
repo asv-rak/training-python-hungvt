@@ -5,11 +5,10 @@
 	<p data-dojo-attach-point="dateNode">${!date}</p>
 	<p data-dojo-attach-point="updateByNode">${!updateBy}</p>
 	<p hidden data-dojo-attach-point="idNode">${!id}</p>
-	<button dojoType="dijit.form.Button" type="submit" data-dojo-attach-event="onclick:_editDialog"
-	        id="contentBtn${id}">Edit
+	<button dojoType="dijit.form.Button" type="submit"
+	        data-dojo-attach-event="onclick:_editDialog">Edit
 	</button>
 	<button dojoType="dijit.form.Button" type="submit"
-	        data-dojo-attach-event="onclick:_deleteDialog"
-	        id="contentBtn${id}">Delete
+	        data-dojo-attach-event="onclick:_deleteDialog">Delete
 	</button>
 </div>
