@@ -81,14 +81,15 @@ class Guestbook(ndb.Model):
         greeting.content = content
         greeting.author = author
         cache_result = None
-        if greeting.put():
-            cache_result = memcache.delete(self.name)
-            if user:
-                taskqueue.add(
-                    method='GET',
-                    url='/mail',
-                    params={'title': title, 'author': author})
-            return cache_result
+        if (greeting.author == author):
+            if greeting.put():
+                cache_result = memcache.delete(self.name)
+                if user:
+                    taskqueue.add(
+                        method='GET',
+                        url='/mail',
+                        params={'title': title, 'author': author})
+                return cache_result
         return cache_result
 
 
@@ -106,8 +107,10 @@ class Guestbook(ndb.Model):
 
     @ndb.transactional
     def delete_message(self, author, user, is_superuser, id):
-        ndb.Key('Guestbook', self.name, Greeting, int(id)).delete()
-        return memcache.delete(self.name)
+        author_name = ndb.Key('Guestbook', self.name, Greeting, int(id)).get().author
+        if (author == author_name):
+            ndb.Key('Guestbook', self.name, Greeting, int(id)).delete()
+            return memcache.delete(self.name)
 
         # if author == user:
         #     greetings = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date).fetch(10)
@@ -120,8 +123,9 @@ class Guestbook(ndb.Model):
         obj.content = greeting_content
         obj.updated_by = author
         cache_result = None
-        if obj.put():
-            return memcache.delete(self.name)
+        if (obj.author == author):
+            if obj.put():
+                return memcache.delete(self.name)
         return cache_result
 
 
