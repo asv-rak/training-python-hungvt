@@ -81,15 +81,15 @@ class Guestbook(ndb.Model):
         greeting.content = content
         greeting.author = author
         cache_result = None
-        if (greeting.author == author):
-            if greeting.put():
-                cache_result = memcache.delete(self.name)
-                if user:
-                    taskqueue.add(
-                        method='GET',
-                        url='/mail',
-                        params={'title': title, 'author': author})
-                return cache_result
+
+        if greeting.put():
+            cache_result = memcache.delete(self.name)
+            if user:
+                taskqueue.add(
+                    method='GET',
+                    url='/mail',
+                    params={'title': title, 'author': author})
+            return cache_result
         return cache_result
 
 
