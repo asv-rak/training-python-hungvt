@@ -62,25 +62,6 @@ define([
 			}, function(err){
 				alert("Deleted failed.")
 			});
-
-			// dojo.xhrDelete({
-            //     // The target URL on your webserver:
-            //     url: this.target,
-			//
-            //     // The used data format.  Text is the most basic, no processing is done on it.
-            //     handleAs: "text",
-			//
-            //     // Event handler on successful call:
-            //     load: function(response, ioArgs){
-            //         alert("Post deleted.")
-            //     },
-			//
-            //     // Event handler on errors:
-            //     error: function(response, ioArgs){
-            //         debug.dir(response);
-            //         alert("Deleted failed.")
-            //     }
-            // });
 		},
 
 		_editDialog: function () {
@@ -105,30 +86,6 @@ define([
 			}, function(err){
 				alert("Please check the input length.")
 			});
-
-			// dojo.xhrPut({
-			// 	// The target URL on your webserver:
-			// 	url: this.target,
-			//
-			// 	data: "Some random text",
-			//
-			// 	headers: {
-			// 		"X-Requested-With": null,
-			// 	},
-			//
-			// 	// The used data format.  Text is the most basic, no processing is done on it.
-			// 	handleAs: "text",
-			//
-			// 	// Event handler on successful call:
-			// 	load: function (response) {
-			// 		alert("Post modified.")
-			// 	},
-			//
-			// 	// Event handler on errors:
-			// 	error: function (response) {
-			// 		alert("Please check the input length.")
-			// 	}
-			// });
 		},
 
 		_changeBackground: function (newColor) {
