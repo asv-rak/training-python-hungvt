@@ -28,7 +28,6 @@
 				    "dojo/domReady!"],
 			    function (request, dom, arrayUtil, guestbookWidget) {
 				    // Load up our authors
-{#				    request("static/js/guestbook/data/test.json", {#}
 				    request.get("api/guestbook/default_guestbook/greeting/", {
 				    	handleAs: "json"
 				    }).then(function (authors) {

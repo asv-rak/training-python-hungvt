@@ -112,10 +112,10 @@ class Guestbook(ndb.Model):
             ndb.Key('Guestbook', self.name, Greeting, int(id)).delete()
             return memcache.delete(self.name)
 
-        # if author == user:
-        #     greetings = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date).fetch(10)
-        #     for greeting in greetings:
-        #         ndb.Key('Guestbook', int(id)).delete()
+            # if author == user:
+            # greetings = Greeting.query(ancestor=self.guestbook_key()).order(-Greeting.date).fetch(10)
+            #     for greeting in greetings:
+            #         ndb.Key('Guestbook', int(id)).delete()
 
     @ndb.transactional
     def update_greeting_by_id(self, author, user, is_superuser, id, greeting_content):
