@@ -33,8 +33,8 @@ define([
 			domStyle.set(domNode, "backgroundColor", this.baseBackgroundColor);
 			this.own(
 					on(domNode, mouse.enter, lang.hitch(this, "_changeBackground", this.mouseBackgroundColor)),
-					on(domNode, mouse.leave, lang.hitch(this, "_changeBackground", this.baseBackgroundColor)),
-					on(domNode, "click", lang.hitch(this, "_openDialog"))
+					on(domNode, mouse.leave, lang.hitch(this, "_changeBackground", this.baseBackgroundColor))
+					// on(domNode, "click", lang.hitch(this, "_openDialog"))
 			);
 		},
 
@@ -43,7 +43,47 @@ define([
 			this.target = lang.replace("http://localhost:8080/api/guestbook/default_guestbook/greeting/{0}", [this.id]);
 		},
 
-		_openDialog: function () {
+		_deleteDialog: function () {
+			if (confirm('Are you sure you want to delete this thing into the database?')) {
+				this._deleteContent();
+			} else {
+
+			}
+		},
+
+		_deleteContent: function () {
+			xhr.del(this.target,{
+				headers: {
+					"X-Requested-With": null,
+				},
+				handleAs: "text"
+			}).then(function(res){
+				alert("Post deleted.")
+			}, function(err){
+				alert("Deleted failed.")
+			});
+
+			// dojo.xhrDelete({
+            //     // The target URL on your webserver:
+            //     url: this.target,
+			//
+            //     // The used data format.  Text is the most basic, no processing is done on it.
+            //     handleAs: "text",
+			//
+            //     // Event handler on successful call:
+            //     load: function(response, ioArgs){
+            //         alert("Post deleted.")
+            //     },
+			//
+            //     // Event handler on errors:
+            //     error: function(response, ioArgs){
+            //         debug.dir(response);
+            //         alert("Deleted failed.")
+            //     }
+            // });
+		},
+
+		_editDialog: function () {
 			var content = window.prompt("Please enter your editing content","");
 			if (content != null)
 				this._changeContent(content)
@@ -65,6 +105,30 @@ define([
 			}, function(err){
 				alert("Please check the input length.")
 			});
+
+			// dojo.xhrPut({
+			// 	// The target URL on your webserver:
+			// 	url: this.target,
+			//
+			// 	data: "Some random text",
+			//
+			// 	headers: {
+			// 		"X-Requested-With": null,
+			// 	},
+			//
+			// 	// The used data format.  Text is the most basic, no processing is done on it.
+			// 	handleAs: "text",
+			//
+			// 	// Event handler on successful call:
+			// 	load: function (response) {
+			// 		alert("Post modified.")
+			// 	},
+			//
+			// 	// Event handler on errors:
+			// 	error: function (response) {
+			// 		alert("Please check the input length.")
+			// 	}
+			// });
 		},
 
 		_changeBackground: function (newColor) {
